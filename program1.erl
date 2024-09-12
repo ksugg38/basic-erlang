@@ -3,13 +3,19 @@
 -export([get_numData/0, compute/1]).
 -team("Annie Pi, Katie Sugg, Christina Yi").
 
-% Get a number from the user
+% Tail-recursive function to get input and continue until 0 is entered
 get_numData() ->
-    {ok, Num} = io:read("Enter a number: "),
-    io:format("The number you entered is: ~w~n", [Num]),
-    case erlang:is_integer(Num) of
-        true -> compute(Num);
-        false -> io:format("Not an integer~n")
+    io:format("Enter a number: "),
+    Input = io:get_line(""),  % Get input as a string
+    case string:to_integer(string:trim(Input)) of
+        {ok, 0} -> 
+            io:format("Stopping the loop. Goodbye!~n");  % Base case: stop on 0
+        {ok, Num} -> 
+            compute(Num),
+            get_numData();  % Tail recursion: call itself again
+        error -> 
+            io:format("Not an integer. Please try again.~n"),
+            get_numData()  % Tail recursion: call itself again on error
     end.
 
 % Perform computation based on the number
