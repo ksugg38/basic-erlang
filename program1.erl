@@ -7,16 +7,17 @@
 get_numData() ->
     io:format("Enter a number: "),
     Input = io:get_line(""),  % Get input as a string
-    case string:to_integer(string:trim(Input)) of
-        {ok, 0} -> 
+    case io_lib:fread("~d", string:trim(Input)) of
+        {ok, [0], _} ->
             io:format("Stopping the loop. Goodbye!~n");  % Base case: stop on 0
-        {ok, Num} -> 
+        {ok, [Num], _} ->
             compute(Num),
             get_numData();  % Tail recursion: call itself again
-        error -> 
+        {error, _Reason} ->
             io:format("Not an integer. Please try again.~n"),
             get_numData()  % Tail recursion: call itself again on error
     end.
+
 
 % Perform computation based on the number
 compute(Num) when Num < 0 ->
